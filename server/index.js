@@ -5,7 +5,7 @@ const cors = require('cors')
 const io = require('socket.io')(server)
 const osc = require('osc-min')
 const dgram = require('dgram')
-const udp = dgram.createSocket('udp4')
+const udp = dgram.createSocket({type:"udp4"})
 
 const ip = '127.0.0.1'
 const inputPort = 6448
@@ -20,24 +20,23 @@ app.use(cors({
 inputDeviceData = (x, y) => {
   const  buf = osc.toBuffer({
     address: "/wek/inputs",
-    args: [{
-      type: "float", value: x,
-      type: "float", value: y
-    }]
+    args: [x, y]
   })
   
   console.log('x, y', x, y)
-  return udp.send(buf, 0, buf.legth, inputPort, ip)
+  return udp.send(buf, 0, buf.length, inputPort, ip)
 }
 
 io.on('connection', socket => {
   socket.emit('ping', "WebSocket link works");
   socket.on('inputData', data => inputDeviceData(data.x, data.y))
-
   const sock = dgram.createSocket({type:"udp4",reuseAddr:true}, (msg, rinfo) => {
     try {
       const oscmsg = osc.fromBuffer(msg)
-      socket.emit('outputData', oscmsg)
+      const seed = oscmsg.args.map(({value}) => value).join('')
+      oscmsg.hexValue = `#${Math.floor((Math.abs(Math.sin(seed) * 16777215)) % 16777215).toString(16)}`
+      console.log(oscmsg)
+      socket.broadcast.emit('outputData', oscmsg);
     } catch (e) {
       return console.log("invalid OSC packet", e)
     }
