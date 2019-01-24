@@ -1,7 +1,7 @@
 ### Web Input Detector
 A Wekinator experiment using React, NodeJS, Express and Socket.io.
 
-The input and the output is packaged within this repo. The input is the x and y coordinates of your mouse. The output is a hex value returned from a web socket connection, which will change the background color of the webpage. You can set any number of outputs and this should work to generate a hex. The ouput generated is a seed that dynamically generates a hex value. If you wanted to output something else, you can evaluate the output sent directly from wekinator within the outputData ws event.
+The input and the output is packaged within this repo. The input is the x and y coordinates of your mouse. The output is a hex value returned from a web socket connection, which will change the background color of the webpage. You can set any number of outputs and this should work to generate a hex. The output generated is a seed that dynamically generates a hex value. If you wanted to output something else, you can evaluate the output sent directly from wekinator within the outputData ws event.
 
 ### Dependencies
 * NodeJS 8.9.4 or higher
